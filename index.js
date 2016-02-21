@@ -8,9 +8,18 @@ const GitHubApi = require("github");
 const program = require('commander');
 const chalk = require('chalk');
 const projectVersion = require('./package.json').version;
+const Q = require('q');
+const _ = require('lodash');
+
+let labelsToRemove = [];
 
 program
   .version(projectVersion)
+  .arguments('<labels>')
+  .action(function(labels) {
+    labelsToRemove = labels.split(',');
+  })
+  .usage('[options] <labels ...>')
   .option('-t, --token', 'Github token')
   .option('-i, --user', 'Github user name or organization')
   .option('-r, --repo', 'Github repo name')
@@ -33,20 +42,36 @@ let githubUser = getEnvVar('GITHUB_USER_OR_ORGANIZATION', program.user);
 let githubRepo = getEnvVar('GITHUB_REPO', program.repo);
 githubRepo = getNormalizedRepoName(githubRepo);
 
-console.log(chalk.green(`Removing all labels from ${githubUser}/${githubRepo} issue:${issueNumber}`));
+console.log(chalk.green(`Removing labels "${labelsToRemove.toString()}" from ${githubUser}/${githubRepo} issue:${issueNumber}`));
 
-github.issues.edit({
-  user: githubUser,
-  repo: githubRepo,
-  number: issueNumber,
-  labels: []
-}, function(err) {
-  if (err) {
+const getIssue = Q.denodeify(github.issues.getRepoIssue);
+const editIssue = Q.denodeify(github.issues.edit);
+
+Q.spawn(function*() {
+  let issue = yield getIssue({
+    user: githubUser,
+    repo: githubRepo,
+    number: issueNumber
+  });
+
+  let labelsToKeep = _.reject(issue.labels, (label) => {
+    return _.indexOf(labelsToRemove, label.name) > -1;
+  });
+
+  labelsToKeep = _.map(labelsToKeep, (label) => label.name);
+
+  try {
+    yield editIssue({
+      user: githubUser,
+      repo: githubRepo,
+      number: issueNumber,
+      labels: labelsToKeep
+    });
+  } catch (ex) {
     console.error(chalk.red(`Could not remove any labels from issue:${issueNumber} because ${err}`));
     process.exit(1);
-    return;
   }
 
-  console.log(chalk.green(`All labels removed from issue:${issueNumber}`));
+  console.log(chalk.green(`Labels removed from issue:${issueNumber}`));
   process.exit();
 });
