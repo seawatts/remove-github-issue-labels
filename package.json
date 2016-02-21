@@ -1,6 +1,6 @@
 {
   "name": "remove-github-issue-labels",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "A small library that will allow you to remove all the github labels on a specific github issue or PR.",
   "main": "index.js",
   "scripts": {
@@ -32,7 +32,9 @@
   "dependencies": {
     "chalk": "^1.1.1",
     "commander": "^2.9.0",
-    "github": "^0.2.4"
+    "github": "^0.2.4",
+    "lodash": "^4.5.0",
+    "q": "^1.4.1"
   },
   "devDependencies": {
     "dotenv": "^2.0.0"
