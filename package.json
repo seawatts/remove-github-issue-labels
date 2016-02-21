@@ -1,0 +1,37 @@
+{
+  "name": "remove-github-issue-labels",
+  "version": "1.0.0",
+  "description": "A small library that will allow you to remove all the github labels on a specific github issue or PR.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seawatts/remove-github-issue-labels.git"
+  },
+  "engines": {
+    "node": ">= 4.x.x"
+  },
+  "keywords": [
+    "github",
+    "issue",
+    "pr",
+    "label"
+  ],
+  "author": "seawatts",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/seawatts/remove-github-issue-labels/issues"
+  },
+  "homepage": "https://github.com/seawatts/remove-github-issue-labels#readme",
+  "dependencies": {
+    "chalk": "^1.1.1",
+    "commander": "^2.9.0",
+    "github": "^0.2.4"
+  },
+  "devDependencies": {
+    "dotenv": "^2.0.0"
+  }
+}
