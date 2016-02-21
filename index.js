@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 'use strict';
 require('dotenv').config();
 const getEnvVar = require('./utils/get-env-var');
